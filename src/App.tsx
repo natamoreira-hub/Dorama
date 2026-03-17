@@ -10,7 +10,7 @@ import { ShoppingCart, Play, CheckCircle2, ShieldCheck, Zap, X, AlertTriangle, T
 export default function App() {
   const checkoutUrl = "https://pay.lowify.com.br/checkout?product_id=ck9UQ8";
   const exitCheckoutUrl = "https://pay.lowify.com.br/go.php?offer=wkl7fqn";
-  const movieTitle = "Ela viu o namorado buscar a ex e decidiu sumir para sempre. Agora, ele corre atrás dela.";
+  const movieTitle = "Ela viu o namorado ir buscar a ex… e tomou a decisão mais difícil da vida dela";
   const movieImage = "https://i.ytimg.com/vi/LK6-1cqxY1A/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAA-hfE6ryBr3fLiDFUTarKYn_3fA";
 
   const [showExitPopup, setShowExitPopup] = useState(false);
@@ -18,9 +18,8 @@ export default function App() {
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
       // Check if mouse left through the top of the window
-      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown')) {
+      if (e.clientY <= 0) {
         setShowExitPopup(true);
-        localStorage.setItem('exit_popup_shown', 'true');
       }
     };
 
@@ -61,7 +60,7 @@ export default function App() {
           className="text-center mb-8"
         >
           <h1 className="text-2xl md:text-3xl font-black leading-tight mb-4 tracking-tight">
-            Ela viu o namorado ir buscar a ex no aeroporto, e decidiu sumir para sempre! Agora ele corre atrás
+            Ela viu o namorado ir buscar a ex… e tomou a decisão mais difícil da vida dela
           </h1>
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
             Descubra o segredo que mudou a vida dela para sempre. O drama que conquistou milhões, agora completo para você.
@@ -272,7 +271,7 @@ export default function App() {
 
               {/* Price Box */}
               <div className="bg-zinc-900/50 rounded-3xl p-8 mb-8 border border-white/5">
-                <p className="text-zinc-500 text-sm line-through mb-1">De R$ 10,00</p>
+                <p className="text-zinc-500 text-sm line-through mb-1">De R$ 5,00</p>
                 <p className="text-6xl font-black text-red-600 tracking-tighter mb-2">
                   R$ 2,99
                 </p>
