@@ -3,13 +3,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { motion } from "motion/react";
-import { ShoppingCart, Play, CheckCircle2, ShieldCheck, Zap } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { ShoppingCart, Play, CheckCircle2, ShieldCheck, Zap, X, AlertTriangle, Ticket } from "lucide-react";
 
 export default function App() {
   const checkoutUrl = "https://pay.lowify.com.br/checkout?product_id=ck9UQ8";
+  const exitCheckoutUrl = "https://pay.lowify.com.br/go.php?offer=wkl7fqn";
   const movieTitle = "Ela viu o namorado buscar a ex e decidiu sumir para sempre. Agora, ele corre atrás dela.";
   const movieImage = "https://i.ytimg.com/vi/LK6-1cqxY1A/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAA-hfE6ryBr3fLiDFUTarKYn_3fA";
+
+  const [showExitPopup, setShowExitPopup] = useState(false);
+
+  useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      // Check if mouse left through the top of the window
+      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown')) {
+        setShowExitPopup(true);
+        localStorage.setItem('exit_popup_shown', 'true');
+      }
+    };
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0a0502] text-white font-sans selection:bg-red-500/30">
@@ -216,6 +233,74 @@ export default function App() {
           </p>
         </footer>
       </main>
+
+      {/* Exit Intent Popup */}
+      <AnimatePresence>
+        {showExitPopup && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md bg-[#121212] border-2 border-red-600/50 rounded-[32px] p-8 text-center shadow-[0_0_50px_rgba(220,38,38,0.3)]"
+            >
+              {/* Close Button */}
+              <button 
+                onClick={() => setShowExitPopup(false)}
+                className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              {/* Header Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/30 border border-red-900/50 mb-8">
+                <AlertTriangle className="w-4 h-4 text-red-500" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-500">
+                  ESPERE! NÃO VÁ AINDA
+                </span>
+              </div>
+
+              {/* Title */}
+              <h2 className="text-4xl font-black text-white mb-6 tracking-tighter uppercase">
+                ÚLTIMA CHANCE
+              </h2>
+
+              {/* Description */}
+              <p className="text-zinc-400 text-sm leading-relaxed mb-8">
+                Não queremos que você perca essa história incrível por causa do preço. Liberamos um desconto extra <span className="text-amber-400 font-bold">SOMENTE AGORA</span>.
+              </p>
+
+              {/* Price Box */}
+              <div className="bg-zinc-900/50 rounded-3xl p-8 mb-8 border border-white/5">
+                <p className="text-zinc-500 text-sm line-through mb-1">De R$ 10,00</p>
+                <p className="text-6xl font-black text-red-600 tracking-tighter mb-2">
+                  R$ 2,99
+                </p>
+                <p className="text-amber-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                  PREÇO DE UMA COCA-COLA!
+                </p>
+              </div>
+
+              {/* CTA Button */}
+              <a 
+                href={exitCheckoutUrl}
+                className="flex items-center justify-center gap-3 w-full py-5 bg-gradient-to-r from-[#d97706] to-[#b45309] hover:from-[#f59e0b] hover:to-[#d97706] text-white rounded-full font-black text-lg transition-all active:scale-[0.98] shadow-xl mb-6 uppercase"
+              >
+                <Ticket className="w-5 h-5" />
+                QUERO PAGAR SÓ R$ 2,99
+              </a>
+
+              {/* Dismiss Link */}
+              <button 
+                onClick={() => setShowExitPopup(false)}
+                className="text-zinc-500 text-xs underline underline-offset-4 hover:text-zinc-300 transition-colors"
+              >
+                Não, prefiro pagar o preço normal
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
