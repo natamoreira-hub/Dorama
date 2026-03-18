@@ -43,7 +43,7 @@ export default function App() {
           className="flex flex-col items-center mb-10"
         >
           <div className="flex items-center gap-0.5 mb-4">
-            <span className="text-2xl font-black tracking-tighter text-red-600">DRAMA</span>
+            <span className="text-2xl font-black tracking-tighter text-red-600">DORAMA</span>
             <span className="text-2xl font-black tracking-tighter text-white">FLIX</span>
           </div>
           <div className="px-4 py-1.5 rounded-full bg-[#2a1d0a] border border-[#4a3515] flex items-center gap-2">
