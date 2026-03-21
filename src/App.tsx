@@ -15,7 +15,34 @@ export default function App() {
 
   const [showExitPopup, setShowExitPopup] = useState(false);
 
+  // Function to append UTMs to a URL
+  const getUrlWithUtms = (baseUrl: string) => {
+    if (typeof window === "undefined") return baseUrl;
+    const searchParams = new URLSearchParams(window.location.search);
+    const utms = searchParams.toString();
+    if (utms) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      return `${baseUrl}${separator}${utms}`;
+    }
+    return baseUrl;
+  };
+
   useEffect(() => {
+    // Notify Utmify to scan links (Backup)
+    const notifyUtmify = () => {
+      if ((window as any).utmify) {
+        try {
+          (window as any).utmify.updateLinks();
+        } catch (e) {
+          // Ignore
+        }
+      }
+    };
+
+    // Try immediately and after a short delay
+    notifyUtmify();
+    const timer = setTimeout(notifyUtmify, 2000);
+
     const handleMouseLeave = (e: MouseEvent) => {
       // Check if mouse left through the top of the window
       if (e.clientY <= 0) {
@@ -24,7 +51,10 @@ export default function App() {
     };
 
     document.addEventListener("mouseleave", handleMouseLeave);
-    return () => document.removeEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -158,8 +188,8 @@ export default function App() {
             </div>
 
             <a 
-              href={checkoutUrl}
-              className="block w-full py-4 bg-red-700 hover:bg-red-600 text-white rounded-full font-black text-center text-lg transition-all active:scale-[0.98] shadow-[0_0_30px_rgba(185,28,28,0.3)] uppercase"
+              href={getUrlWithUtms(checkoutUrl)}
+              className="utmify-checkout block w-full py-4 bg-red-700 hover:bg-red-600 text-white rounded-full font-black text-center text-lg transition-all active:scale-[0.98] shadow-[0_0_30px_rgba(185,28,28,0.3)] uppercase"
             >
               COMPRAR AGORA - R$ 5,00
             </a>
@@ -282,8 +312,8 @@ export default function App() {
 
               {/* CTA Button */}
               <a 
-                href={exitCheckoutUrl}
-                className="flex items-center justify-center gap-3 w-full py-5 bg-gradient-to-r from-[#d97706] to-[#b45309] hover:from-[#f59e0b] hover:to-[#d97706] text-white rounded-full font-black text-lg transition-all active:scale-[0.98] shadow-xl mb-6 uppercase"
+                href={getUrlWithUtms(exitCheckoutUrl)}
+                className="utmify-checkout flex items-center justify-center gap-3 w-full py-5 bg-gradient-to-r from-[#d97706] to-[#b45309] hover:from-[#f59e0b] hover:to-[#d97706] text-white rounded-full font-black text-lg transition-all active:scale-[0.98] shadow-xl mb-6 uppercase"
               >
                 <Ticket className="w-5 h-5" />
                 QUERO PAGAR SÓ R$ 2,99
